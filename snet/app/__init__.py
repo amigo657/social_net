@@ -5,6 +5,7 @@ import snet
 import argparse
 import logging
 import logging.config as lconfig
+from tortoise.contrib.aiohttp import register_tortoise
 # import aiohttp_jinja2
 # from jinja2 import FileSystemLoader
 from aiohttp import web
@@ -71,7 +72,7 @@ class SNetService:
             "-w"
             "--wait",
             dest = "wait",
-            default = "store_true",
+            action = "store_true",
             help = "Run bg tasks.",
         )
         # return parser.parse_args()
@@ -80,11 +81,12 @@ class SNetService:
     @staticmethod
     def create_app() -> AiohttpApp:
         lconfig.dictConfig(settings.LOGGING)
-        log = logging.getLogger(settings.LOGGING)
+        log = logging.getLogger(settings.LOGGER)
         app = web.Application(logger = log)
         app.middlewares.extend([importlib.import_module(m) for m in settings.MIDDLEWARES])
         app.on_startup.extend([importlib.import_module(m) for m in settings.STARTUP])
         app.on_shutdown.extend([importlib.import_module(m) for m in settings.SHUTDOWN])
+        register_tortoise(app, config = settings.DATABASE)
         Controller.entry_point(settings.ROOTURLS)
         for route in Controller.urls():
             app.router.add_route("*", route.path, route.handler, name = route.name)

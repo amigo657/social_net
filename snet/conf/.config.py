@@ -16,21 +16,25 @@ SHUTDOWN = []
 TASKS = []
 DATABASE = {
     "connections":{
-        "default":{
-            "engine": "tortoise.backends.asyncpg",
-            "credentials":{
-                "host": "127.0.0.1",
-                "port": 5432,
-                "user": "snet",
-                "password": "parol",
-                "database": "snet_data",
-                "minsize": 50,
-                "maxsize": 90 if DEBUG else 190,
-            }
-        }
+        "default": f"sqlite://{BASE_DIR}/db.sqlite"
+        # "default":{
+        #     "engine": "tortoise.backends.asyncpg",
+        #     "credentials":{
+        #         "host": "127.0.0.1",
+        #         "port": 5432,
+        #         "user": "snet",
+        #         "password": "parol",
+        #         "database": "snet_data",
+        #         "minsize": 50,
+        #         "maxsize": 90 if DEBUG else 190,
+        #     }
+        # }
     },
     "apps":{
-        #
+        "user": {
+            "models": ["snet.store.user_models"],
+            "default_connection": "default",
+        }
     },
     "timezone": "UTC",
 }

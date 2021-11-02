@@ -75,7 +75,7 @@ class Setup:
             long_description=self.long_desc,
             long_description_content_type="text/markdown",
             install_requires=self.packages,
-            python_requires=">=3.8.10",
+            python_requires=">=3.8",
             zip_safe=False,
             entry_points={"console_scripts": ["snet_run = snet.app:run"]},
             classifiers=[
